@@ -17,6 +17,8 @@ class App extends StatelessWidget {
             primarySwatch: Colors.indigo,
             backgroundColor: const Color(0xFF181433),
             brightness: Brightness.dark,
+          ).copyWith(
+            primary: const Color(0xFF1B2446),
           ),
           scaffoldBackgroundColor: const Color(0xFF181433),
           useMaterial3: true,

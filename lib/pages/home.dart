@@ -1,7 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+
 import '../model/activity.dart';
+import '../model/activity_group.dart';
+import '../view/activity_group_card.dart';
+import '../examples.dart' as examples;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,27 +13,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final activities = <ActivityGroup>[
-    ActivityGroup(title: 'Morning routine')
-      ..activities.addAll([
-        Activity(keyword: 'wake up'),
-        Activity(keyword: 'brush teeth'),
-        Activity(keyword: 'eat breakfast'),
-        Activity(keyword: 'go to work'),
-      ]),
-    ActivityGroup(title: 'Evening routine')
-      ..activities.addAll([
-        Activity(keyword: 'go home'),
-        Activity(keyword: 'eat dinner'),
-        Activity(keyword: 'brush teeth'),
-        Activity(keyword: 'go to bed')
-      ]),
-  ];
+  final activities = examples.dailyRoutine;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: const BottomAppBar(padding: EdgeInsets.all(64.0), child: Text('Bottom bar')),
+        bottomNavigationBar: const BottomAppBar(
+            padding: EdgeInsets.all(64.0), child: Text('Bottom bar')),
         floatingActionButton: FloatingActionButton(
           onPressed: () => setState(() {
             activities.add(ActivityGroup(title: 'Untitled'));
@@ -40,31 +28,18 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ClipRect(
-              child: Column(
-                children: [
-                  const SearchBar(),
-                  Expanded(
-                      child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      return Row(
-                        children: [
-                          Expanded(child: ActivityGroupCard(activities[index])),
-                          const SizedBox(width: 8.0),
-                          const IconButton(
-                            icon: Icon(Icons.help_outline),
-                            onPressed: null,
-                          ),
-                        ],
-                      );
-                    },
-                    itemCount: activities.length,
-                  ))
-                ],
-              ),
-            ),
+          child: Column(
+            children: [
+              const SearchBar(),
+              Expanded(
+                  child: ListView.builder(
+                itemBuilder: (context, index) => ActivityGroupCard(
+                  activities[index],
+                  onRemove: (group) => setState(() => activities.remove(group)),
+                ),
+                itemCount: activities.length,
+              ))
+            ],
           ),
         ));
   }
@@ -86,10 +61,10 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFF1B2446),
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
